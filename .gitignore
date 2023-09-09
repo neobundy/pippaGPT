@@ -8,3 +8,4 @@ __pycache__
 ./chromadb
 ./temp
 .env
+tts_voice_ids.py
