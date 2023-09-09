@@ -1,0 +1,14 @@
+[
+    {
+        "role": "System",
+        "content": "System's message."
+    },
+    {
+        "role": "Human",
+        "content": "Human's message."
+    },
+    {
+        "role": "AI",
+        "content": "AI's message."
+    }
+]

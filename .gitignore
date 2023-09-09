@@ -1,0 +1,10 @@
+__pycache__
+.DS_Store
+.idea/
+*.mp3
+*.wav
+./conversations
+./static
+./chromadb
+./temp
+.env
