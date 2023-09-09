@@ -7,6 +7,10 @@ import tts_voice_ids
 
 DEBUG_MODE = True
 
+# Logging
+
+LOG_FILE = "pippa.log"
+
 # Project
 PROJECT_TITLE = f"Pippa - Personalized, Ingesting, Persistent, Polymorphic, Adaptive GPT Chatbot"
 VERSION = "0.9b"

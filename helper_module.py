@@ -5,6 +5,11 @@ import openai
 import json
 import uuid
 from dotenv import load_dotenv
+import logging
+
+import settings
+
+logging.basicConfig(filename=settings.LOG_FILE, level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 
 
 def get_current_date_time():
@@ -29,13 +34,18 @@ def log(log_message, log_type="info"):
     current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     log_types = {
-        "debug": f"🪲{current_datetime} - DEBUG: ",
-        "error": f"‼️{current_datetime} - Error: ",
-        "test": f":🛠️️{current_datetime} - Testing: ",
-        "info": f"✏️{current_datetime} - INFO: ",
+        "debug": {"emoji": "🪲", "log_func": logging.debug},
+        "error": {"emoji": "‼️", "log_func": logging.error},
+        "test": {"emoji": "🛠️", "log_func": logging.info},
+        "info": {"emoji": "✏️", "log_func": logging.info},
     }
-    print(log_types.get(log_type.lower(), log_types["info"]), log_message)
 
+    log_type = log_type.lower()
+    log_data = log_types.get(log_type, log_types["info"])
+
+    log_message = f"{log_data['emoji']} {log_message}"
+    print(f"{current_datetime} - {log_message}")
+    log_data['log_func'](log_message)
 
 def get_openai_model_names(gpt_only=False):
     load_dotenv()
