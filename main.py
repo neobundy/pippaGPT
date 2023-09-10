@@ -368,6 +368,7 @@ def select_model(memory):
 
 def set_custom_instructions(ci=""):
     st.session_state.custom_instructions = ci
+    helper_module.log(f"Custom Instructions Set: {ci}", "info")
 
 
 def get_custom_instructions(default=False):
@@ -714,9 +715,10 @@ def main():
             with st.spinner("Pippa is typing ..."):
                 with get_openai_callback() as cb:
                     stream_handler = StreamHandler(st.empty())
-                    memory = ConversationBufferMemory(input_key="question",
-                                                      memory_key="history")
                     if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_QA):
+                        memory = ConversationBufferMemory(input_key="question",
+                                                          memory_key="history")
+                        helper_module.log(f"Retrieval QA Session Started...: {user_input}", "info")
                         answer, docs = retrieval_qa_run(system_input, user_input, memory, callbacks=[stream_handler])
                         if settings.SHOW_SOURCES:
                             helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
@@ -727,6 +729,7 @@ def main():
 
                         new_context_window.save_context({"human_input": user_input}, {"output": answer})
                     else:
+                        helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
                         answer = ai_model.run(
                             system_input=system_input,
                             human_input=user_input,
