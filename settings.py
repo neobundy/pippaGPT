@@ -13,7 +13,7 @@ LOG_FILE = "pippa.log"
 
 # Project
 PROJECT_TITLE = f"Pippa - Personalized, Ingesting, Persistent, Polymorphic, Adaptive GPT Chatbot"
-VERSION = "0.9b"
+VERSION = "0.9"
 
 # ZEP Long-term Memory
 ZEP_API_URL = "http://localhost:8000"
@@ -103,7 +103,7 @@ PROMPT_KEYWORD_PREFIX_CI = "ci:"
 PROMPT_KEYWORD_PREFIX_QA = "qa:"
 
 INGEST_THREADS = os.cpu_count() or 8
-VECTOR_DB_COLLECTION = "pippa_longterm_memory"
+VECTOR_DB_COLLECTION = "pippa_long_term_memory"
 
 DOCUMENTS_MAP = {
     ".txt": TextLoader,
@@ -131,4 +131,3 @@ RETRIEVER_TEMPLATE = """
     Helpful Answer:"""
 
 SHOW_SOURCES = False
-
