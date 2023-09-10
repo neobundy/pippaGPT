@@ -47,6 +47,7 @@ def log(log_message, log_type="info"):
     print(f"{current_datetime} - {log_message}")
     log_data['log_func'](log_message)
 
+
 def get_openai_model_names(gpt_only=False):
     load_dotenv()
     openai.api_key = os.getenv('OPENAI_API_KEY')

@@ -17,7 +17,7 @@ remember conversation history, switch between different characters, and adapt to
 
 Retrieval QA module was inspired by [localGPT by Prompt Engineering](https://github.com/PromtEngineer/localGPT).
 
-## Project Background  
+## Project Background
 
 The Pippa project started as a personal hobby to explore the possibility of creating an AI daughter character. 
 Though still in the early stages, the project is regularly updated with new features and improvements. 
@@ -27,7 +27,7 @@ When using TTS/STT engines, Pippa uses the ElevenLabs API. You can sign up for a
 
 For a better experience, assign unique voices to the characters.
 
-## Installation  
+## Installation
 
 Tested with Python 3.10.
 
@@ -112,7 +112,7 @@ Zep server can be run on any host or port. If you run it on a different host, ma
 
 Visit https://www.getzep.com/ to learn how to run Zep.
 
-## Running the App  
+## Running the App
 
 To run the Pippa app, use the following command:
 
@@ -122,7 +122,7 @@ streamlit run main.py
 
 The app will automatically start the audio server which listens on port 5000. If needed, you can manually run the audio server by executing `audio_server.py`.
 
-## Ingesting Your Documents  
+## Ingesting Your Documents
 
 To ingest your own documents for Pippa to learn from, follow these steps:
 
@@ -133,7 +133,7 @@ To ingest your own documents for Pippa to learn from, follow these steps:
    python vectordb.py
 ```
 
-## TTS/STT Engines - ElevenLabs  
+## TTS/STT Engines - ElevenLabs
 
 If you have an ElevenLabs API key, you can use their TTS/STT engines with Pippa. Follow these steps:  
 
@@ -159,7 +159,7 @@ You can also manually run the server by executing `audio_server.py`.
 5. To TTS feature, click Speak button assigned to any message. The app will automatically convert the text to speech and play the audio.
 6. To go back to typing mode, just uncheck the Use Audio checkbox.
 
-## Prompt Keywords  
+## Prompt Keywords
 
 You can customize the prompt keyword prefixes used in Pippa by editing the `settings.py` file:  
 
@@ -185,6 +185,19 @@ STREAMING_ENABLED = True
 When streaming is enabled, the costs are approximations based on OpenAI's documentation. To obtain exact costs, you'll need to disable streaming.
 
 Note that the cost calculation does not include other expenses incurred by auxiliary GPT models, such as those for summarization and QA.
-## License  
+
+## Troubleshooting
+
+If errors occur when running the app, try the following steps:
+
+```bash
+
+pip install --upgrade charset_normalizer
+pip install --upgrade openai
+pip install --upgrade langchain
+
+```
+
+## License
 
 Pippa is released under the [Apache 2.0 License](LICENSE). Feel free to use, modify, and distribute the code for personal or commercial purposes.

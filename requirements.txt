@@ -16,3 +16,4 @@ chromadb==0.4.*
 unstructured
 unstructured[md]
 pydantic==1.*
+chardet
