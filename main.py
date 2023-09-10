@@ -65,7 +65,6 @@ def init_page():
     st.markdown(""" [Go to Bottom](#bottom) """, unsafe_allow_html=True)
     st.sidebar.caption(f"v{settings.VERSION}")
     st.sidebar.subheader("Options")
-    init_session_state()
 
 
 def init_session_state():
@@ -642,10 +641,48 @@ def load_user_input_from_file():
         return ""
 
 
+def setup_and_cleanup(func):
+    # TODO: pre-processing
+
+    helper_module.log(
+        f"------------ {characters.AI_NAME} v{settings.VERSION} running... ------------", "info"
+    )
+    helper_module.log(
+        f"------------ Initializing... ------------", "info"
+    )
+    # Flask runs on port 5000
+    is_server_running = os.system(f"lsof -i :{settings.AUDIO_SERVER_PORT}")
+
+    if is_server_running != 0:
+        helper_module.log(
+            f"Firing up Flask audio server...", "info"
+        )
+        subprocess.Popen(["python", "audio_server.py"])
+    load_dotenv()
+    openai.api_key = os.getenv('OPENAI_API_KEY')
+
+    helper_module.log(
+        f"Initializing Streamlit session state...", "info"
+    )
+
+    init_session_state()
+
+    def wrapper(*args, **kwargs):
+        func(*args, **kwargs)
+
+    # TODO: post-processing
+    helper_module.log(
+        f"------------ Cleaning up... ------------", "info"
+    )
+
+    return wrapper
+
+
+# pre- and post- processor decorator for main function
+@setup_and_cleanup
 def main():
     init_page()
     display_tts_panel()
-
     save_snapshot = False
 
     # Chat message history that stores messages in Streamlit session state. Remember it works as context window and doesn't retain the whole conversation history!
@@ -654,8 +691,7 @@ def main():
     new_context_window = update_context_window(old_context_window)
     ai_model = select_model(memory=new_context_window)
 
-    if settings.DEBUG_MODE:
-        helper_module.log(f"Memory type: {st.session_state.memory_type}", "debug")
+    helper_module.log(f"Memory type: {st.session_state.memory_type}", "info")
 
     display_context_window_panel(new_context_window)
     display_entire_conversation_history_panel()
@@ -704,20 +740,9 @@ def main():
                     new_cost = display_cost_info(cb, answer, new_context_window)
                     st.session_state.costs.append(new_cost)
 
-    display_costs_panel(st.session_state.get("costs", []))
-    display_conversation_history_panel(new_context_window, save_snapshot)
+        display_costs_panel(st.session_state.get("costs", []))
+        display_conversation_history_panel(new_context_window, save_snapshot)
 
 
 if __name__ == "__main__":
-    # Flask runs on port 5000
-    is_server_running = os.system(f"lsof -i :{settings.AUDIO_SERVER_PORT}")
-
-    if is_server_running != 0:
-        subprocess.Popen(["python", "audio_server.py"])
-    print("\n\n")
-    helper_module.log(
-        f"------------ {characters.AI_NAME} v{settings.VERSION} running... ------------", "info"
-    )
-    load_dotenv()
-    openai.api_key = os.getenv('OPENAI_API_KEY')
     main()
