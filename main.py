@@ -236,9 +236,18 @@ def update_context_window(context_window):
 
     view_custom_instructions = st.expander("View Custom Instructions")
     with view_custom_instructions:
-        handle_message(SystemMessage(content=custom_instructions), 0)
         if st.button("Load default custom instructions"):
             set_custom_instructions(get_custom_instructions(default=True))
+        new_custom_instructions = st.text_area(label="Change Custom Instructions:",
+                                               value=get_custom_instructions(),
+                                               height=200,
+                                               max_chars=settings.MAX_NUM_CHARS_FOR_CUSTOM_INSTRUCTIONS,
+                                               )
+        if new_custom_instructions != custom_instructions:
+            set_custom_instructions(new_custom_instructions)
+            st.write(f"✏️ Custom instructions updated.")
+            custom_instructions = new_custom_instructions
+        handle_message(SystemMessage(content=custom_instructions), 0)
 
     st.session_state.memory_type = memory_type
     return updated_context_window
