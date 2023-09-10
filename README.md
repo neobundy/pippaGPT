@@ -135,7 +135,11 @@ To ingest your own documents for Pippa to learn from, follow these steps:
 
 ## TTS/STT Engines - ElevenLabs
 
-If you have an ElevenLabs API key, you can use their TTS/STT engines with Pippa. Follow these steps:  
+If you have an ElevenLabs API key, you can use their TTS(Text-to-Speech) engine with Pippa. 
+
+STT(Speech-to-Text) is handled by OpenAI's Whisper-1 model.
+
+Follow these steps:
 
 1. Run the `tts.py` script to get the available voice names and IDs from your ElevenLabs account: 
 
@@ -153,7 +157,6 @@ VOICE_ID_HUMAN = ""
 
 2. The TTS/STT features are supported as a Flask audio server. The server will automatically run and listen on port 5000 when the app is started. 
 You can also manually run the server by executing `audio_server.py`.
-
 3. When Use Audio checkbox is checked, the app will use the audio server to convert text to speech and speech to text. On Mac, you should allow the app to use Microphone in System Preferences. On first use, you'll be prompted to allow the app to use the microphone.
 4. Record button starts recording, click Stop when done. The app will automatically convert the recorded audio to text and send it to the chatbot.
 5. To TTS feature, click Speak button assigned to any message. The app will automatically convert the text to speech and play the audio.
