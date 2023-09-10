@@ -13,7 +13,7 @@ LOG_FILE = "pippa.log"
 
 # Project
 PROJECT_TITLE = f"Pippa - Personalized, Ingesting, Persistent, Polymorphic, Adaptive GPT Chatbot"
-VERSION = "0.9"
+VERSION = "1.0a"
 
 # ZEP Long-term Memory
 ZEP_API_URL = "http://localhost:8000"
