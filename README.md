@@ -60,17 +60,22 @@ To install Pippa, follow these steps:
 > brew install portaudio
 > ```
 
-4. Create a `.env` file in the root folder of the project and add your API keys: 
+4. Create or copy `env_sample` to `.env` file in the root folder of the project and add your API keys: 
+
+Note that HUGGING_FACE_API_KEY is for future use.
 
 ```bash
-   OPENAI_API_KEY=YOUR_OPENAI_API_KEY
-   XI_API_KEY=YOUR_ELEVENLAPS_API_KEY
-   SERPAPI_API_KEY=YOUR_SERPAPI_API_KEY
+OPENAI_API_KEY=
+XI_API_KEY=
+HUGGING_FACE_API_KEY=
+SERPAPI_API_KEY=
 ```   
    
  Alternatively, you can export these environment variables in your terminal.
 
-5. Choose LLMs model in `settings.py` file:
+5. Copy `settings_private_sample.py` to `settings_private.py`. `setttings_sample.py` to `settings.py` and edit the files to customize your settings.
+
+6. Choose LLMs model in `settings.py` file:
 
 ```python
 DEFAULT_GPT_MODEL = "gpt-3.5-turbo"
@@ -86,7 +91,7 @@ Large context needs more tokens. 16k tokens is enough for most cases.
 
 GPT-4 model for DEFAULT_GPT_MODEL is highly recommended for better experience, but note that it's 10x expensive and only available for pre-paid OpenAI accounts. 
 
-6. Some sensitive or user-specific settings found in the `settings_private.py` such as Zep vector store server or audio server URLs.
+7. Some sensitive or user-specific settings found in the `settings_private.py` such as Zep vector store server or audio server URLs.
 
 ```python
 ZEP_API_URL = "http://localhost:8000"
