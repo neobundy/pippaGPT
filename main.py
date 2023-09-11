@@ -569,6 +569,19 @@ def is_agent_query(user_input):
                                                                     settings.PROMPT_KEYWORD_PREFIX_MATH])
 
 
+def get_agent_from_user_input(user_input):
+    agent = None
+    if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
+        agent = agents.get_google_agent(agents.get_agent_llm())
+        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
+    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
+        agent = agents.get_wiki_agent(agents.get_agent_llm())
+        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_WIKI):]
+    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
+        agent = agents.get_math_agent(agents.get_agent_llm())
+        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_MATH):]
+    return agent, user_input
+
 def handle_user_input(user_input, last_num):
     system_input = get_custom_instructions()
     if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_CI):
@@ -731,15 +744,7 @@ def main():
                             new_context_window.save_context({"human_input": user_input}, {"output": answer})
                     elif is_agent_query(user_input):
                         helper_module.log(f"Agent Session Started...: {user_input}", "info")
-                        if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
-                            agent = agents.get_google_agent(agents.get_agent_llm())
-                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
-                        elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
-                            agent = agents.get_wiki_agent(agents.get_agent_llm())
-                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_WIKI):]
-                        elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
-                            agent = agents.get_math_agent(agents.get_agent_llm())
-                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_MATH):]
+                        agent, user_input = get_agent_from_user_input(user_input)
                         intermediate_answer = agent(user_input)["output"]
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
                         helper_module.log(f"User message: {user_input}", "info")
