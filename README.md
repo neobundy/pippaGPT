@@ -161,7 +161,7 @@ Follow these steps:
    python tts.py
 ```
 
-Update the following variables in `tts_voice_ids.py` and `settings.py` with the appropriate voice IDs: 
+Update the following variables in `settings_private.py` with the appropriate voice IDs: 
 
 ```python
 VOICE_ID_AI = ""
