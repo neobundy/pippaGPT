@@ -171,7 +171,7 @@ AI:
             func=llm_chain.run,
             description="Use this tool to generate a midjourney descriptive prompt as input for another generative AI tool. "
                         "The output will contain a Python code snippet starting with '/image prompt:'. "
-                        "Return this output exactly as is without any modification."
+                        "Return this output exactly as it is without any modification."
         ), ],
         llm=llm,
         verbose=True,
