@@ -9,5 +9,3 @@ __pycache__
 ./temp
 .env
 pippa.log
-settings.py
-settings_private.py

@@ -73,7 +73,7 @@ SERPAPI_API_KEY=
    
  Alternatively, you can export these environment variables in your terminal.
 
-5. Copy `settings_private_sample.py` to `settings_private.py`. `setttings_sample.py` to `settings.py` and edit the files to customize your settings.
+5. Copy `settings_private_sample.py` to `settings_private.py`. `settings_sample.py` to `settings.py` and edit the files to customize your settings.
 
 6. Choose LLMs model in `settings.py` file:
 
