@@ -36,13 +36,13 @@ To install Pippa, follow these steps:
 1. Clone the repository:
 
 ```bash
-   git clone https://github.com/neobundy/pippa.git
+   git clone https://github.com/neobundy/pippaGPT.git
 ```
 
 2. Navigate to the project directory: 
 
 ```bash
-   cd pippa
+   cd pippaGPT
 ```
 
 3. Install the required dependencies: 
