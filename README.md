@@ -203,6 +203,16 @@ DEFAULT_GPT_AGENT_HELPER_MODEL = "gpt-4"
 
 ‼️Warning: This operation is very expensive in terms of OpenAI tokens.
 
+```python
+MAX_AGENTS_ITERATIONS = 8
+```
+
+The number of iterations determines how many times the agent will run. A higher number of iterations generally leads to more accurate answers, but it also consumes more tokens.  
+
+Please note that the Google Search agent may need to perform multiple queries to obtain the best answer. 
+
+For instance, if you ask "Who is the oldest among the heads of state of South Korea, the US, and Japan?", the agent will likely need to query at least 3-4 times to obtain the final answer.
+
 The same model may respond differently to the same query. Even 'gpt-4' doesn't always perform the best, but highly recommended. Experiment with different models.  
 
 Note that even at the LangChain level, it's highly experimental. It may not work as expected.
@@ -211,7 +221,7 @@ Note that even at the LangChain level, it's highly experimental. It may not work
 
 It's a hit-or-miss situation depending on your prompting skills. You need a SerpApi API key to use the Google search feature: https://serpapi.com. The provided final answer serves as an intermediate prompt for the main model.
 
-## Search Wikipedia
+### Search Wikipedia
 
 The agent first attempts to find the relevant Wikipedia page for the given query. If found, it will return the summary of the page and search for the specific term within the summary.
 

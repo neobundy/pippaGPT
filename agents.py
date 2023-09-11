@@ -124,7 +124,7 @@ def main():
     my_agent("When did Antoni Gaudi die?")
 
     my_agent = get_google_agent(llm)
-    my_agent("Who is the oldest: the head of states of the United States, South Korea and Japan ?")
+    my_agent("Who is the oldest among the heads of state of South Korea, the US, and Japan?")
     my_agent("Who gives the highest price target of Tesla in Wall Street? And what's the price target?")
 
 
