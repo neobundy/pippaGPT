@@ -186,6 +186,7 @@ You can customize the prompt keyword prefixes used in Pippa by editing the `sett
 * `PROMPT_KEYWORD_PREFIX_GOOGLE`: Used for searching the web for given information (default: "google:")
 * `PROMPT_KEYWORD_PREFIX_WIKI`: Used for searching Wikipedia (default: "wiki:")
 * `PROMPT_KEYWORD_PREFIX_MATH`: Used for mathematical query (default: "math:")
+* `PROMPT_KEYWORD_PREFIX_MIDJOURNEY`: Used for generating Midjourney prompts (default: "midjourney:")
 
 ## How Conversations and Context Windows are managed and saved
 
