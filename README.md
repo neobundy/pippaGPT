@@ -60,11 +60,12 @@ To install Pippa, follow these steps:
 > brew install portaudio
 > ```
 
-4. Create a `.env` file in the root folder of the project and add your OpenAI API key and ElevenLabs API key: 
+4. Create a `.env` file in the root folder of the project and add your API keys: 
 
 ```bash
    OPENAI_API_KEY=YOUR_OPENAI_API_KEY
    XI_API_KEY=YOUR_ELEVENLAPS_API_KEY
+   SERPAPI_API_KEY=YOUR_SERPAPI_API_KEY
 ```   
    
  Alternatively, you can export these environment variables in your terminal.
@@ -169,6 +170,9 @@ You can customize the prompt keyword prefixes used in Pippa by editing the `sett
 * `PROMPT_KEYWORD_PREFIX_SYSTEM`: Used for temporary system messages (default: "system:") 
 * `PROMPT_KEYWORD_PREFIX_CI`: Used for replacing custom instructions (default: "ci:") 
 * `PROMPT_KEYWORD_PREFIX_QA`: Used for retrieval QA based on your documents in the `docs` folder (default: "qa:")
+* `PROMPT_KEYWORD_PREFIX_GOOGLE`: Used for searching the web for given information (default: "google:")
+* `PROMPT_KEYWORD_PREFIX_WIKI`: Used for searching Wikipedia (default: "wiki:")
+* `PROMPT_KEYWORD_PREFIX_MATH`: Used for mathematical query (default: "math:")
 
 ## How Conversations and Context Windows are managed and saved
 
@@ -189,9 +193,35 @@ When streaming is enabled, the costs are approximations based on OpenAI's docume
 
 Note that the cost calculation does not include other expenses incurred by auxiliary GPT models, such as those for summarization and QA.
 
+## Agents
+
+Set the following constant in `settings.py`:
+
+```python
+DEFAULT_GPT_AGENT_HELPER_MODEL = "gpt-4"
+```
+
+‼️Warning: This operation is very expensive in terms of OpenAI tokens.
+
+The same model may respond differently to the same query. Even 'gpt-4' doesn't always perform the best, but highly recommended. Experiment with different models.  
+
+Note that even at the LangChain level, it's highly experimental. It may not work as expected.
+
+### Searching Web
+
+This feature is highly experimental. You need a SerpApi API key to use the Google search feature. The provided final answer serves as an intermediate prompt for the main model.
+
+## Search Wikipedia
+
+The agent first attempts to find the relevant Wikipedia page for the given query. If found, it will return the summary of the page and search for the specific term within the summary.
+
+### Math
+
+LLMs are not known for their proficiency in math. The math agent provides accurate answers for highly complex math problems.
+
 ## Troubleshooting
 
-If errors occur when running the app, try the following steps:
+If you encounter errors when running the app, try the following steps:
 
 ```bash
 

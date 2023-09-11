@@ -37,6 +37,7 @@ from vectordb import retrieval_qa_run
 import token_counter
 import tts
 import characters
+import agents
 import settings
 
 
@@ -578,6 +579,14 @@ def handle_user_input(user_input, last_num):
         system_input = get_custom_instructions()
         handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
         append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
+    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
+        system_input = get_custom_instructions()
+        handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
+        append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
+    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
+        system_input = get_custom_instructions()
+        handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
+        append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
     else:
         system_input = get_custom_instructions()
         handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
@@ -712,7 +721,7 @@ def main():
         save_user_input_to_file(user_input)
         system_input = handle_user_input(user_input, last_num)
         if system_input:
-            with st.spinner("Pippa is typing ..."):
+            with (st.spinner("Pippa is typing ...")):
                 with get_openai_callback() as cb:
                     stream_handler = StreamHandler(st.empty())
                     if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_QA):
@@ -727,6 +736,29 @@ def main():
                                 helper_module.log(document.page_content)
                             helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
 
+                        new_context_window.save_context({"human_input": user_input}, {"output": answer})
+                    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE) \
+                            or user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI) \
+                            or user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
+                        helper_module.log(f"Agent Session Started...: {user_input}", "info")
+                        if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
+                            agent = agents.get_google_agent(agents.get_agent_llm())
+                        elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
+                            agent = agents.get_wiki_agent(agents.get_agent_llm())
+                        elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
+                            agent = agents.get_math_agent(agents.get_agent_llm())
+                        intermediate_answer = agent(user_input)["output"]
+                        helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
+                        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
+                        helper_module.log(f"User message: {user_input}", "info")
+                        helper_module.log(f"Intermediate answer: {intermediate_answer}", "info")
+                        system_input = system_input + " You must give this information as it is in the language the user asked: " + intermediate_answer
+                        helper_module.log(f"System message: {system_input}", "info")
+                        answer = ai_model.run(
+                            system_input=system_input,
+                            human_input=user_input,
+                            callbacks=[stream_handler],
+                        )
                         new_context_window.save_context({"human_input": user_input}, {"output": answer})
                     else:
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")

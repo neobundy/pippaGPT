@@ -17,3 +17,5 @@ unstructured
 unstructured[md]
 pydantic==1.*
 chardet
+wikipedia
+google-search-results
