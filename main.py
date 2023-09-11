@@ -564,19 +564,14 @@ def display_conversation_history_panel(memory, save_snapshot):
 
 
 def is_agent_query(user_input):
-    return any(user_input.lower().startswith(prefix) for prefix in [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
-                                                                    settings.PROMPT_KEYWORD_PREFIX_WIKI,
-                                                                    settings.PROMPT_KEYWORD_PREFIX_MATH])
+    return any(user_input.lower().startswith(prefix) for prefix in settings.AGENT_PROMPT_PREFIXES)
 
 
 # An agent method should follow the naming convention: get_<agent_name_prefix>_agent
 # The agent name prefix should be the same as the agent name in the settings.py file
 def get_agent_from_user_input(user_input):
     agent = None
-    prefixes = [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
-                settings.PROMPT_KEYWORD_PREFIX_WIKI,
-                settings.PROMPT_KEYWORD_PREFIX_MATH]
-    for prefix in prefixes:
+    for prefix in settings.AGENT_PROMPT_PREFIXES:
         if user_input.lower().startswith(prefix):
             agent_method = getattr(agents, f"get_{prefix.lower().strip(':')}_agent")
             agent = agent_method(agents.get_agent_llm())
@@ -752,7 +747,7 @@ def main():
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
                         helper_module.log(f"User message: {user_input}", "info")
                         helper_module.log(f"Intermediate answer: {intermediate_answer}", "info")
-                        system_input = system_input + " No matter what the user asked, you must give this answer as it is in the language the user asked: " + intermediate_answer
+                        system_input = system_input + " No matter what the user asked, you must give this answer exactly as it is including the markdown formatting in the language the user asked: " + intermediate_answer
                         helper_module.log(f"System message: {system_input}", "info")
                         answer = ai_model.run(
                             system_input=system_input,
