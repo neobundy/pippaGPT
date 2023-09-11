@@ -207,7 +207,7 @@ The same model may respond differently to the same query. Even 'gpt-4' doesn't a
 
 Note that even at the LangChain level, it's highly experimental. It may not work as expected.
 
-### Searching Web
+### Search Web
 
 It's a hit-or-miss situation depending on your prompting skills. You need a SerpApi API key to use the Google search feature: https://serpapi.com. The provided final answer serves as an intermediate prompt for the main model.
 
