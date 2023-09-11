@@ -59,6 +59,9 @@ def wiki_tool(tools):
     return tools
 
 
+# An agent method should follow the naming convention: get_<agent_name_prefix>_agent
+# The agent name prefix should be the same as the agent name in the settings.py file
+
 def get_math_agent(llm, memory=None):
     tools = []
     tools = math_tool(llm, tools)
