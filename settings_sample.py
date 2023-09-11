@@ -3,7 +3,6 @@ from pathlib import Path
 import os
 
 import characters
-import tts_voice_ids
 import settings_private
 
 DEBUG_MODE = True
@@ -80,12 +79,12 @@ AVATAR_SYSTEM = str(IMAGES_FOLDER / "system.png")
 
 # TTS
 VOICE_NAME_AI = characters.AI_NAME
-VOICE_ID_AI = tts_voice_ids.VOICE_ID_AI
+VOICE_ID_AI = settings_private.VOICE_ID_AI
 VOICE_FILE_AI = str(TEMP_FOLDER / "_ai.mp3")
 VOICE_NAME_SYSTEM = characters.SYSTEM_NAME
-VOICE_ID_SYSTEM = tts_voice_ids.VOICE_ID_SYSTEM
+VOICE_ID_SYSTEM = settings_private.VOICE_ID_SYSTEM
 VOICE_FILE_SYSTEM = str(TEMP_FOLDER / "_system.mp3")
-VOICE_ID_HUMAN = tts_voice_ids.VOICE_ID_HUMAN
+VOICE_ID_HUMAN = settings_private.VOICE_ID_HUMAN
 VOICE_NAME_HUMAN = characters.HUMAN_NAME
 VOICE_FILE_HUMAN = str(TEMP_FOLDER / "_human.mp3")
 VOICES_URL = "https://api.elevenlabs.io/v1/voices"
