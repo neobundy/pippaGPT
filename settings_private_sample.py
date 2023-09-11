@@ -9,7 +9,7 @@ DEFAULT_MEMORY_TYPE = "Summary Buffer"
 AUDIO_SERVER_URL = "http://localhost:5000"
 
 
-# TTS Voicd IDs
+# TTS Voice IDs
 
 VOICE_ID_AI = ""
 VOICE_ID_SYSTEM = ""
