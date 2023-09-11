@@ -209,7 +209,7 @@ Note that even at the LangChain level, it's highly experimental. It may not work
 
 ### Searching Web
 
-This feature is highly experimental. You need a SerpApi API key to use the Google search feature. The provided final answer serves as an intermediate prompt for the main model.
+It's a hit-or-miss situation depending on your prompting skills. You need a SerpApi API key to use the Google search feature: https://serpapi.com. The provided final answer serves as an intermediate prompt for the main model.
 
 ## Search Wikipedia
 
