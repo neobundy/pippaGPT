@@ -571,16 +571,21 @@ def is_agent_query(user_input):
 
 def get_agent_from_user_input(user_input):
     agent = None
-    if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
-        agent = agents.get_google_agent(agents.get_agent_llm())
-        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
-    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
-        agent = agents.get_wiki_agent(agents.get_agent_llm())
-        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_WIKI):]
-    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
-        agent = agents.get_math_agent(agents.get_agent_llm())
-        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_MATH):]
+    prefixes = [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
+                settings.PROMPT_KEYWORD_PREFIX_WIKI,
+                settings.PROMPT_KEYWORD_PREFIX_MATH]
+    for prefix in prefixes:
+        if user_input.lower().startswith(prefix):
+            if prefix == settings.PROMPT_KEYWORD_PREFIX_GOOGLE:
+                agent = agents.get_google_agent(agents.get_agent_llm())
+            elif prefix == settings.PROMPT_KEYWORD_PREFIX_WIKI:
+                agent = agents.get_wiki_agent(agents.get_agent_llm())
+            elif prefix == settings.PROMPT_KEYWORD_PREFIX_MATH:
+                agent = agents.get_math_agent(agents.get_agent_llm())
+            user_input = user_input[len(prefix):]
+            break
     return agent, user_input
+
 
 def handle_user_input(user_input, last_num):
     system_input = get_custom_instructions()
