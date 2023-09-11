@@ -735,24 +735,25 @@ def main():
                                 helper_module.log("\n> " + document.metadata["source"] + ":")
                                 helper_module.log(document.page_content)
                             helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
-
-                        new_context_window.save_context({"human_input": user_input}, {"output": answer})
-                    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE) \
-                            or user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI) \
-                            or user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
+                            new_context_window.save_context({"human_input": user_input}, {"output": answer})
+                    elif any(user_input.lower().startswith(prefix) for prefix in [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
+                                                                                  settings.PROMPT_KEYWORD_PREFIX_WIKI,
+                                                                                  settings.PROMPT_KEYWORD_PREFIX_MATH]):
                         helper_module.log(f"Agent Session Started...: {user_input}", "info")
                         if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
                             agent = agents.get_google_agent(agents.get_agent_llm())
+                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
                         elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
                             agent = agents.get_wiki_agent(agents.get_agent_llm())
+                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_WIKI):]
                         elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_MATH):
                             agent = agents.get_math_agent(agents.get_agent_llm())
+                            user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_MATH):]
                         intermediate_answer = agent(user_input)["output"]
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
-                        user_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):]
                         helper_module.log(f"User message: {user_input}", "info")
                         helper_module.log(f"Intermediate answer: {intermediate_answer}", "info")
-                        system_input = system_input + " You must give this information as it is in the language the user asked: " + intermediate_answer
+                        system_input = system_input + " No matter what the user asked, you must give this answer as it is in the language the user asked: " + intermediate_answer
                         helper_module.log(f"System message: {system_input}", "info")
                         answer = ai_model.run(
                             system_input=system_input,
