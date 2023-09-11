@@ -563,34 +563,27 @@ def display_conversation_history_panel(memory, save_snapshot):
         export_conversation(snapshot=True)
 
 
+def is_agent_query(user_input):
+    return any(user_input.lower().startswith(prefix) for prefix in [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
+                                                                    settings.PROMPT_KEYWORD_PREFIX_WIKI,
+                                                                    settings.PROMPT_KEYWORD_PREFIX_MATH])
+
+
 def handle_user_input(user_input, last_num):
+    system_input = get_custom_instructions()
     if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_CI):
-        system_input = user_input[
-            len(settings.PROMPT_KEYWORD_PREFIX_CI):
-        ]  # Remove prefix
-        handle_message(SystemMessage(content=system_input.strip()), last_num + 1)
+        system_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_CI):].strip()
         set_custom_instructions(system_input)
-        append_to_full_conversation_history(HumanMessage(content=user_input))
     elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_SYSTEM):
-        system_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_SYSTEM):]
-        handle_message(SystemMessage(content=system_input.strip()), last_num + 1)
-        append_to_full_conversation_history(HumanMessage(content=user_input))
-    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_QA):
-        system_input = get_custom_instructions()
-        handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
-        append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
-    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
-        system_input = get_custom_instructions()
-        handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
-        append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
-    elif user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_WIKI):
-        system_input = get_custom_instructions()
+        system_input = user_input[len(settings.PROMPT_KEYWORD_PREFIX_SYSTEM):].strip()
+    elif is_agent_query(user_input):
         handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
         append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
     else:
-        system_input = get_custom_instructions()
         handle_message(HumanMessage(content=user_input.strip()), last_num + 1)
         append_to_full_conversation_history(HumanMessage(content=user_input.strip()))
+    if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_CI) or user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_SYSTEM):
+        handle_message(SystemMessage(content=system_input), last_num + 1)
     return system_input
 
 
@@ -736,9 +729,7 @@ def main():
                                 helper_module.log(document.page_content)
                             helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
                             new_context_window.save_context({"human_input": user_input}, {"output": answer})
-                    elif any(user_input.lower().startswith(prefix) for prefix in [settings.PROMPT_KEYWORD_PREFIX_GOOGLE,
-                                                                                  settings.PROMPT_KEYWORD_PREFIX_WIKI,
-                                                                                  settings.PROMPT_KEYWORD_PREFIX_MATH]):
+                    elif is_agent_query(user_input):
                         helper_module.log(f"Agent Session Started...: {user_input}", "info")
                         if user_input.lower().startswith(settings.PROMPT_KEYWORD_PREFIX_GOOGLE):
                             agent = agents.get_google_agent(agents.get_agent_llm())
