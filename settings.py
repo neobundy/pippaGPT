@@ -69,7 +69,7 @@ MODEL_COST_GPT3_TURBO_16K_OUTPUT = 0.004 / TOKENS_PER_K
 
 # Memory
 
-DEFAULT_MEMORY_TYPE = "Summary Buffer"
+DEFAULT_MEMORY_TYPE = settings_private.DEFAULT_MEMORY_TYPE
 MEMORY_TYPES = ["Sliding Window", "Token", "Summary", "Summary Buffer", "Zep", "Buffer"]
 SLIDING_CONTEXT_WINDOW = 10
 
