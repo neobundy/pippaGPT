@@ -106,10 +106,10 @@ Summaries appear when Summary type memory is selected including Zep. Summaries a
 Note that it takes a while for Zep to index and generate summaries. When not ready, "Summarizing...please be patient." message will appear.
 
 ```python
-ZEP_API_URL = "http://localhost:8000"
+ZEP_API_URL=http://localhost:8000
 ```
 
-Zep server can be run on any host or port. If you run it on a different host, make sure to update the `ZEP_API_URL` variable in `settings.py`.
+Zep server can be run on any host or port. If you run it on a different host, make sure to update the `ZEP_API_URL` variable in `settings_private.py`.
 
 Visit https://www.getzep.com/ to learn how to run Zep.
 

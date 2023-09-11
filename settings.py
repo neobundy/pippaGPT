@@ -4,6 +4,7 @@ import os
 
 import characters
 import tts_voice_ids
+import settings_private
 
 DEBUG_MODE = True
 
@@ -16,7 +17,7 @@ PROJECT_TITLE = f"Pippa - Personalized, Ingesting, Persistent, Polymorphic, Adap
 VERSION = "1.0a"
 
 # ZEP Long-term Memory
-ZEP_API_URL = "http://localhost:8000"
+ZEP_API_URL = settings_private.ZEP_API_URL
 
 # Paths
 BASE_DIR = Path(__file__).resolve().parent
@@ -94,7 +95,7 @@ VOICE_URL_HUMAN = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID_HUMAN}
 
 # Audio
 TRANSCRIPTION_TEMP_AUDIO_FILE = str(TEMP_FOLDER / "_transcribed_audio.wav")
-AUDIO_SERVER_URL = "http://localhost:5000"
+AUDIO_SERVER_URL = settings_private.AUDIO_SERVER_URL
 OPENAI_AUDIO_MODEL = "whisper-1"
 AUDIO_SERVER_PORT = 5000
 
