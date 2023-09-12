@@ -723,8 +723,16 @@ def main():
         else st.chat_input("Prompt: ")
     )
 
-    if user_input:
+    available_prefix_options = ["None"] + settings.ALL_PROMPT_PREFIXES
 
+    prefix_option = st.selectbox(
+        "Keyword Prefix",
+        available_prefix_options)
+
+    if user_input:
+        if prefix_option != "None":
+            user_input = f"{prefix_option} {user_input}"
+            helper_module.log(f"Keyword prefix used: {prefix_option} {user_input}", "info")
         # try saving last user input in case of runtime error
         save_user_input_to_file(user_input)
         system_input = handle_user_input(user_input, last_num)
