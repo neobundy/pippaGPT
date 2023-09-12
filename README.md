@@ -73,9 +73,11 @@ SERPAPI_API_KEY=
    
  Alternatively, you can export these environment variables in your terminal.
 
-5. Copy `settings_private_sample.py` to `settings_private.py`. `settings_sample.py` to `settings.py` and edit the files to customize your settings.
+5. copy `characters_samply.py` to `characters.py` and edit the file to customize your AI's name and personality.
 
-6. Choose LLMs model in `settings.py` file:
+6. Copy `settings_private_sample.py` to `settings_private.py`. `settings_sample.py` to `settings.py` and edit the files to customize your settings.
+
+7. Choose LLMs model in `settings.py` file:
 
 ```python
 DEFAULT_GPT_MODEL = "gpt-3.5-turbo"
@@ -91,7 +93,7 @@ Large context needs more tokens. 16k tokens is enough for most cases.
 
 GPT-4 model for DEFAULT_GPT_MODEL is highly recommended for better experience, but note that it's 10x expensive and only available for pre-paid OpenAI accounts. 
 
-7. Some sensitive or user-specific settings found in the `settings_private.py` such as Zep vector store server or audio server URLs.
+8. Some sensitive or user-specific settings found in the `settings_private.py` such as Zep vector store server or audio server URLs.
 
 ```python
 ZEP_API_URL = "http://localhost:8000"
