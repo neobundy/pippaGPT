@@ -12,7 +12,8 @@ import settings
 
 def get_agent_llm():
     load_dotenv()
-    return ChatOpenAI(model_name=settings.DEFAULT_GPT_AGENT_HELPER_MODEL)
+    return ChatOpenAI(temperature=settings.DEFAULT_GPT_AGENT_HELPER_MODEL_TEMPERATURE,
+                      model_name=settings.DEFAULT_GPT_AGENT_HELPER_MODEL)
 
 
 def math_tool(llm, tools):
@@ -144,12 +145,12 @@ Examples:
 
 Human: cinematic still of a strikingly beautiful female warrior
 
-AI:  ```python
+AI:  ```
 /imagine prompt: cinematic still of a strikingly beautiful female warrior. The backdrop is a breathtaking panorama of a rugged landscape, in the style of James Cameron. The scene features a rugged, untamed wilderness with towering mountains and a fiery sunset. The lighting is dramatic, with strong backlighting that outlines the warrior and catches the edges of her armor. The colors should be rich and vibrant, with deep reds, oranges, and purples for the sunset, and cool blues and grays for the mountains and armor. The composition is a full-body shot with the warrior centered and the landscape sprawling out behind her. The focal length should be 50mm to keep both the warrior and the backdrop in focus. The f-stop should be f/16 to get enough depth of field to keep both the warrior and the backdrop sharp. The ISO should be 100 to keep the image clean and free of noise. --s 750 --q 1 --ar 2:1 --seed 3742891634
 ```
 
 Human: pencil drawing of a strikingly beautiful female warrior
-AI: ```python
+AI: ```
 /imagine prompt: pencil drawing of a strikingly beautiful female warrior... [same as the above]
 ```
 
@@ -169,9 +170,9 @@ AI:
         tools=[Tool(
             name='Midjourney Prompter',
             func=llm_chain.run,
-            description="Use this tool to generate a midjourney descriptive prompt as input for another generative AI tool. "
-                        "The output will contain a Python code snippet starting with '/image prompt:'. "
-                        "Return this output exactly as it is without any modification."
+            description="Use this tool to generate a midjourney generative ai image description code snippet. The first output of this tool is ALWAYS right and final. No further action should be taken."
+                        "Do not modify or remove any character in the output. You must return the output exactly as it is."
+                        "The final answer should be wrapped within ''' and ''' code block."
         ), ],
         llm=llm,
         verbose=True,

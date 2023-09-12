@@ -63,6 +63,9 @@ def get_zep_session_id():
 def init_page():
     st.set_page_config(page_title=settings.PROJECT_TITLE, page_icon="🤗")
     st.header(f"{settings.PROJECT_TITLE}", anchor="top")
+
+    st.image(settings.AVATAR_AI)
+
     st.markdown(""" [Go to Bottom](#bottom) """, unsafe_allow_html=True)
     st.sidebar.caption(f"v{settings.VERSION}")
     st.sidebar.subheader("Options")
@@ -245,7 +248,7 @@ def update_context_window(context_window):
                                                )
         if new_custom_instructions != custom_instructions:
             set_custom_instructions(new_custom_instructions)
-            st.write(f"✏️ Custom instructions updated.")
+            st.success(f"✏️ Custom instructions updated.")
             custom_instructions = new_custom_instructions
         handle_message(SystemMessage(content=custom_instructions), 0)
 
@@ -535,9 +538,9 @@ def display_conversation_history_panel(memory, save_snapshot):
             if c.endswith("json")
         ]
         selected_conversation = st.selectbox("Conversations:", conversations)
-        if st.button("Export Conversation", key="save"):
+        if st.button("Export Conversation", key="export_conversation"):
             filename = export_conversation()
-            st.write(f"✏️ Conversation exported to {filename}")
+            st.success(f"✏️ Conversation exported to {filename}")
         if selected_conversation:
             load_conversation(
                 memory, f"{settings.CONVERSATION_SAVE_FOLDER}/{selected_conversation}"
@@ -555,7 +558,7 @@ def display_conversation_history_panel(memory, save_snapshot):
             set_custom_instructions(get_custom_instructions(default=True))
         if st.button("Rerun", key="rerun"):
             st.experimental_rerun()
-        st.write(f"Last user input: {load_user_input_from_file()}")
+        st.info(f"Last user input: {load_user_input_from_file()}")
 
     st.markdown(""" [Go to top](#top) """, unsafe_allow_html=True)
     st.subheader("", anchor="bottom")
@@ -685,6 +688,7 @@ def setup_and_cleanup(func):
         func(*args, **kwargs)
 
     # TODO: post-processing
+
     helper_module.log(
         f"------------ Cleaning up... ------------", "info"
     )
@@ -747,6 +751,10 @@ def main():
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
                         helper_module.log(f"User message: {user_input}", "info")
                         helper_module.log(f"Intermediate answer: {intermediate_answer}", "info")
+
+                        st.subheader("""Intermediate Answer from Agent""")
+                        st.markdown(intermediate_answer)
+
                         system_input = system_input + " No matter what the user asked, you must give this answer exactly as it is including the markdown formatting in the language the user asked: " + intermediate_answer
                         helper_module.log(f"System message: {system_input}", "info")
                         answer = ai_model.run(
@@ -766,12 +774,12 @@ def main():
                     handle_message(AIMessage(content=answer), last_num + 2)
                     append_to_full_conversation_history(AIMessage(content=answer))
 
-                    save_snapshot = True
-                    new_cost = display_cost_info(cb, answer, new_context_window)
-                    st.session_state.costs.append(new_cost)
+        save_snapshot = True
+        new_cost = display_cost_info(cb, answer, new_context_window)
+        st.session_state.costs.append(new_cost)
 
-        display_costs_panel(st.session_state.get("costs", []))
-        display_conversation_history_panel(new_context_window, save_snapshot)
+    display_costs_panel(st.session_state.get("costs", []))
+    display_conversation_history_panel(new_context_window, save_snapshot)
 
 
 if __name__ == "__main__":
