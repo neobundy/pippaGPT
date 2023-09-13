@@ -6,15 +6,16 @@ from langchain.chains import RetrievalQA
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
-from langchain.docstore.document import Document
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
-
+from langchain.docstore.document import Document
+import chromadb
 import characters
 import settings
 import openai
 import os
-
+import json
 import helper_module
+from pathlib import Path
 
 
 def load_document_single(filepath: str) -> Document:
@@ -108,7 +109,7 @@ def create_vectordb(source_folder):
     embeddings = OpenAIEmbeddings()
 
     my_vectordb = Chroma.from_documents(
-        collection_name=settings.VECTOR_DB_COLLECTION,
+        collection_name=settings.VECTORDB_COLLECTION,
         documents=texts,
         embedding=embeddings,
         persist_directory=settings.CHROMA_DB_FOLDER,
@@ -117,7 +118,7 @@ def create_vectordb(source_folder):
     return my_vectordb
 
 
-def get_vector_db(collection_name=settings.VECTOR_DB_COLLECTION):
+def get_vectordb(collection_name=settings.VECTORDB_COLLECTION):
     embeddings = OpenAIEmbeddings()
     my_vectordb = Chroma(
         collection_name=collection_name,
@@ -128,17 +129,17 @@ def get_vector_db(collection_name=settings.VECTOR_DB_COLLECTION):
     return my_vectordb
 
 
-def delete_vector_db(collection_name):
-    my_vectordb = get_vector_db(collection_name)
+def delete_vectordb():
+    my_vectordb = get_vectordb(settings.VECTORDB_COLLECTION)
     my_vectordb.delete_collection()
     my_vectordb.persist()
-    helper_module.log(f"Vector DB deleted: {collection_name}", 'info')
+    helper_module.log(f"Vector DB collection deleted: {settings.VECTORDB_COLLECTION}", 'info')
 
 
 def retrieval_qa_run(system_message, human_input, context_memory, callbacks=None):
-    vectordb = get_vector_db(settings.VECTOR_DB_COLLECTION)
 
-    retriever = vectordb.as_retriever(search_kwargs={"k": settings.NUM_SOURCES_TO_RETURN})
+    my_vectordb = get_vectordb()
+    retriever = my_vectordb.as_retriever(search_kwargs={"k": settings.NUM_SOURCES_TO_RETURN})
 
     template = system_message + settings.RETRIEVER_TEMPLATE
 
@@ -165,19 +166,55 @@ def retrieval_qa_run(system_message, human_input, context_memory, callbacks=None
     return my_answer, my_docs
 
 
+def embed_conversations():
+    """ Ingest past conversations as long-term memory into the vector DB."""
+
+    helper_module.log(f"Loading conversations in batch: {settings.CONVERSATION_SAVE_FOLDER}", 'info')
+
+    conversations = []
+    for json_file in settings.CONVERSATION_SAVE_FOLDER.glob('*.json'):
+        if not str(json_file).endswith(settings.SNAPSHOT_FILENAME):
+            with open(json_file, 'r') as f:
+                json_data = json.load(f)
+                result_str = ""
+                for entry in json_data:
+                    result_str += f"{entry['role']}: {entry['content']}\n"
+                conversations.append(Document(page_content=result_str, metadata = {"source": str(json_file)}))
+
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=settings.DOCUMENT_SPLITTER_CHUNK_SIZE,
+                                                   chunk_overlap=settings.DOCUMENT_SPLITTER_CHUNK_OVERLAP)
+
+    texts = text_splitter.split_documents(conversations)
+    my_vectordb = get_vectordb()
+    my_vectordb.add_documents(documents=texts, embeddings=OpenAIEmbeddings())
+    helper_module.log(f"{len(conversations)} of conversations found", 'info')
+    helper_module.log(f"{len(texts)} chunks of text embedded", 'info')
+
+
+def display_vectordb_info():
+    persistent_client = chromadb.PersistentClient(path=settings.CHROMA_DB_FOLDER)
+    collection = persistent_client.get_or_create_collection(settings.VECTORDB_COLLECTION)
+    helper_module.log(f"VectorDB Folder: {settings.CONVERSATION_SAVE_FOLDER}", 'info')
+    helper_module.log(f"Collection: {settings.VECTORDB_COLLECTION}", 'info')
+    helper_module.log(f"Number of items in collection: {collection.count()}", 'info')
+
+
 if __name__ == "__main__":
     load_dotenv()
     openai.api_key = os.getenv('OPENAI_API_KEY')
 
     while True:
-        user_input = input("\n(C)create DB, (D)elete DB, (Q)uery - type 'quit' or 'exit' to quit: ")
-        if 'c' in user_input.lower():
+        display_vectordb_info()
+        user_input = input("\n(C)create DB, (E)mbed conversations, (D)elete collection, (Q)uery - type 'quit' or 'exit' to quit: ")
+        if 'c' == user_input.lower().strip():
             create_vectordb(settings.DOCUMENT_FOLDER)
-        elif 'd' in user_input.lower():
+        elif 'e' == user_input.lower().strip():
+            embed_conversations()
+        elif 'd' == user_input.lower().strip():
             user_input = input("\nAre you sure? Type 'yes' if you are: ")
-            if 'yes' in user_input:
-                delete_vector_db(settings.VECTOR_DB_COLLECTION)
-        elif 'q' in user_input.lower():
+            if 'yes' == user_input.lower().strip():
+                delete_vectordb()
+        elif 'q' == user_input.lower().strip():
             while True:
                 memory = ConversationBufferMemory(input_key="question",
                                                   memory_key="history")

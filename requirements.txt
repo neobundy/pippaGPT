@@ -19,3 +19,4 @@ pydantic==1.*
 chardet
 wikipedia
 google-search-results
+jq

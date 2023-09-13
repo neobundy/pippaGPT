@@ -33,7 +33,7 @@ from pathlib import Path
 
 # Local application/library specific imports
 import helper_module
-from vectordb import retrieval_qa_run
+from vectordb import retrieval_qa_run, display_vectordb_info
 import token_counter
 import tts
 import characters
@@ -461,7 +461,7 @@ def export_conversation(snapshot=False):
         os.makedirs(settings.CONVERSATION_SAVE_FOLDER)
 
     if snapshot:
-        filepath = f"{settings.CONVERSATION_SAVE_FOLDER}/snapshot.json"
+        filepath = f"{settings.CONVERSATION_SAVE_FOLDER}/{settings.SNAPSHOT_FILENAME}"
     else:
         now = datetime.now().strftime("%Y%m%d-%H%M%S")
         save_folder = Path(settings.CONVERSATION_SAVE_FOLDER)
@@ -744,13 +744,14 @@ def main():
                         memory = ConversationBufferMemory(input_key="question",
                                                           memory_key="history")
                         helper_module.log(f"Retrieval QA Session Started...: {user_input}", "info")
+                        display_vectordb_info()
                         answer, docs = retrieval_qa_run(system_input, user_input, memory, callbacks=[stream_handler])
                         if settings.SHOW_SOURCES:
-                            helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
+                            helper_module.log("----------------------------------SOURCE DOCUMENTS BEGIN---------------------------")
                             for document in docs:
                                 helper_module.log("\n> " + document.metadata["source"] + ":")
                                 helper_module.log(document.page_content)
-                            helper_module.log("----------------------------------SOURCE DOCUMENTS---------------------------")
+                            helper_module.log("----------------------------------SOURCE DOCUMENTS END---------------------------")
                             new_context_window.save_context({"human_input": user_input}, {"output": answer})
                     elif is_agent_query(user_input):
                         helper_module.log(f"Agent Session Started...: {user_input}", "info")
