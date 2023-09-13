@@ -245,6 +245,23 @@ The agent first attempts to find the relevant Wikipedia page for the given query
 
 LLMs are not known for their proficiency in math. The math agent provides accurate answers for highly complex math problems.
 
+## Managing Vector DB
+
+To manage the vector database, run the `vectordb.py` script. 
+
+```bash
+   python vectordb.py
+```
+
+You have the following options:
+
+* (C)reate DB: Create a new vector database in the `settings.CHROMA_DB_FOLDER` folder with a collection named `settings.VECTORDB_COLLECTION`.
+* (E)mbed conversations: Embed conversations from the `settings.CONVERSATION_SAVE_FOLDER` folder into the vector database to serve as long-term memory.
+* (D)elete collection: Delete the vector database collection. This action will not delete the vector database itself.
+* (Q)uery the DB: Query the vector database in a loop. Enter 'exit' or 'quit' to exit the loop.
+
+Note that when you choose the (E)mbed conversations option, only the existing exported conversations `*.json` will be embedded into the vector database, excluding `snapshot.json`.
+
 ## Troubleshooting
 
 If you encounter errors when running the app, try the following steps:
