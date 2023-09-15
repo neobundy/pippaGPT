@@ -25,9 +25,18 @@ TEMP_FOLDER = BASE_DIR / "temp"
 IMAGES_FOLDER = BASE_DIR / "images"
 DOCUMENT_FOLDER = str(BASE_DIR / "docs")
 CHROMA_DB_FOLDER = str(BASE_DIR / "chromadb")
-DYNAMIC_LORA_FOLDER = BASE_DIR / "dynamic_lora"
 USER_INPUT_SAVE_FILE = str(TEMP_FOLDER / "last_user_input.md")
 SNAPSHOT_FILENAME = "snapshot.json"
+
+# Folders to make if they don't exist
+
+FOLDERS_TO_MAKE = [
+    'static',
+    str(CONVERSATION_SAVE_FOLDER),
+    str(TEMP_FOLDER),
+    DOCUMENT_FOLDER,
+    CHROMA_DB_FOLDER,
+]
 
 # GPT Models
 DEFAULT_GPT_MODEL = "gpt-4"

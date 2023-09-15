@@ -667,6 +667,11 @@ def setup_and_cleanup(func):
     helper_module.log(
         f"------------ Initializing... ------------", "info"
     )
+
+    # make folders if they don't exist
+    for folder in settings.FOLDERS_TO_MAKE:
+        Path(folder).mkdir(parents=True, exist_ok=True)
+
     # Flask runs on port 5000
     is_server_running = os.system(f"lsof -i :{settings.AUDIO_SERVER_PORT}")
 
