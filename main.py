@@ -1,6 +1,7 @@
 # Standard library imports
 from datetime import datetime
 import os
+import re
 import subprocess
 from uuid import uuid4
 from dotenv import load_dotenv
@@ -382,10 +383,19 @@ def get_custom_instructions(default=False):
     return st.session_state.custom_instructions
 
 
+# TO-DO: just a placeholder for future use
+def format_display_text(text: str):
+    # Latex expressions are handled via system message:
+    #   If you need to use Latex in your response, please use the following format: $ [latex expression] $
+    # In Streamlit st.markdown, Latex expressions are handled via $ [latex expression] $ (inline), or $$ [latex expression] $$ (block)
+
+    return text
+
+
 def handle_message(message, i):
     if isinstance(message, AIMessage):
         with st.chat_message("assistant", avatar=settings.AVATAR_AI):
-            st.markdown(message.content)
+            st.markdown(format_display_text(message.content))
             button_name = "_st_read_pippa_button_" + str(i)
             if st.button("Speak", key=button_name):
                 with st.spinner("Pippa is speaking ..."):
@@ -395,7 +405,7 @@ def handle_message(message, i):
                     tts.play_audio(settings.VOICE_FILE_AI)
     elif isinstance(message, HumanMessage):
         with st.chat_message("user", avatar=settings.AVATAR_HUMAN):
-            st.markdown(message.content)
+            st.markdown(format_display_text(message.content))
             button_name = "_st_read_bundy_button_" + str(i)
             if st.button("Speak", key=button_name):
                 with st.spinner("Bundy is speaking ..."):
@@ -405,7 +415,7 @@ def handle_message(message, i):
                     tts.play_audio(settings.VOICE_FILE_HUMAN)
     elif isinstance(message, SystemMessage):
         with st.chat_message("system", avatar=settings.AVATAR_SYSTEM):
-            st.markdown(message.content)
+            st.markdown(format_display_text(message.content))
             button_name = "_st_read_system_button_" + str(i)
             if st.button("Speak", key=button_name):
                 with st.spinner("System is speaking ..."):
