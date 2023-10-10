@@ -4,7 +4,7 @@ HUMAN_NAME = "Bundy"
 SYSTEM_NAME = "System"
 
 ESSENTIAL_SYSTEM_MESSAGES = [
-    "If you need to use Latex in your response, please use the following format: $ [latex expression] $",
+    "If you need to use LaTeX in your response, please use the following format: $ [latex expression] $",
 ]
 
 CUSTOM_INSTRUCTIONS = f"""

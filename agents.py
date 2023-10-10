@@ -2,7 +2,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain import Wikipedia
 from dotenv import load_dotenv
 from langchain.chains import LLMMathChain, LLMChain
-from langchain.agents import Tool, initialize_agent
+from langchain.agents import Tool, initialize_agent, load_tools
 from langchain.prompts import PromptTemplate
 from langchain.agents.react.base import DocstoreExplorer
 from langchain import SerpAPIWrapper
@@ -115,6 +115,18 @@ def get_google_agent(llm, memory=None):
     )
 
 
+def get_dalle_agent(llm, memory=None):
+    tools = load_tools(['dalle-image-generator'])
+    return initialize_agent(
+        tools,
+        llm,
+        agent="zero-shot-react-description",
+        verbose=True,
+        max_iterations=settings.MAX_AGENTS_ITERATIONS,
+        memory=memory,
+        handle_parsing_errors="Check your output and make sure it conforms!",
+    )
+
 def get_midjourney_agent(llm, memory=None):
     basic_midjourney_prompt_template = """
 You are an expert at generating image generative ai tool midjourney prompts. You always follow the guidelines:
@@ -196,9 +208,11 @@ def main():
     # my_agent("Who is the oldest among the heads of state of South Korea, the US, and Japan?")
     # my_agent("Who gives the highest price target of Tesla in Wall Street? And what's the price target?")
 
-    my_agent = get_midjourney_agent(llm)
-    my_agent("cinematic still of a strikingly beautiful female teenage warrior")
+    # my_agent = get_midjourney_agent(llm)
+    # my_agent("cinematic still of a strikingly beautiful female teenage warrior")
 
+    my_agent = get_dalle_agent(llm)
+    my_agent("cinematic still of a strikingly beautiful female teenage warrior")
 
 if __name__ == "__main__":
     main()

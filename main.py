@@ -590,7 +590,7 @@ def get_agent_from_user_input(user_input):
             agent = agent_method(agents.get_agent_llm())
             user_input = user_input[len(prefix):]
             break
-    return agent, user_input
+    return prefix, agent, user_input
 
 
 def handle_user_input(user_input, last_num):
@@ -770,12 +770,19 @@ def main():
                             new_context_window.save_context({"human_input": user_input}, {"output": answer})
                     elif is_agent_query(user_input):
                         helper_module.log(f"Agent Session Started...: {user_input}", "info")
-                        agent, user_input = get_agent_from_user_input(user_input)
+                        prefix, agent, user_input = get_agent_from_user_input(user_input)
                         intermediate_answer = agent(user_input)["output"]
+                        helper_module.log(f"Agent: {prefix}", "info")
                         helper_module.log(f"Normal Chat Session Started...: {user_input}", "info")
                         helper_module.log(f"User message: {user_input}", "info")
                         helper_module.log(f"Intermediate answer: {intermediate_answer}", "info")
 
+                        if prefix == settings.PROMPT_KEYWORD_PREFIX_DALLE:
+                            pattern = r'\((.*?)\)'
+                            matches = re.findall(pattern, intermediate_answer)
+                            image_url = matches[0] if matches else None
+                            markdown_string = f'<a href="{image_url}" target="_blank"><img src="{image_url}" width="{settings.DALLE_IMAGE_SCALE_FACTOR}"/></a>'
+                            st.markdown(markdown_string, unsafe_allow_html=True)
                         st.subheader("""Intermediate Answer from Agent""")
                         st.markdown(intermediate_answer)
 
